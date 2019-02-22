@@ -18,6 +18,40 @@ nums2 = [3, 4]
 
 则中位数是 (2 + 3)/2 = 2.5
 ***/
+//排序（时间复杂度不满足）
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int i = 0, j = 0, m = nums1.size(), n = nums2.size();
+        int sum = m+n;
+        int mid1 = sum/2, mid2 = mid1;
+        vector<int> v(sum); 
+        
+        if(0 == sum%2){
+            mid2 -= 1;
+        }
+        sum = 0;
+        
+        for(;i < m && j < n;){
+            if(nums1[i] < nums2[j]){
+                v[sum++] = nums1[i++];
+            }else{
+                v[sum++] = nums2[j++];
+            }
+        }
+        
+        for(;i < m;){
+            v[sum++] = nums1[i++];
+        }
+        
+        for(;j < n;){
+            v[sum++] = nums2[j++];
+        }
+        
+        return double(v[mid1] + v[mid2])/2;
+    }
+};
+//递归（O（log（min（m,n））））
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
