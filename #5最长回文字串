@@ -1,0 +1,91 @@
+/***
+给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+
+示例 1：
+
+输入: "babad"
+输出: "bab"
+注意: "aba" 也是一个有效答案。
+示例 2：
+
+输入: "cbbd"
+输出: "bb"
+***/
+//中心扩展
+class Solution {
+public:
+    int expandAroundCenter(string s, int left, int right){
+        int L = left,R = right;
+        while(L >= 0 && R < s.length() && s[L] == s[R]){
+            L --;
+            R ++;
+        }
+        return R - L - 1;
+    }
+    
+    string longestPalindrome(string s) {
+        if(s.length() < 1) return "";
+        int start = 0, end = 0;
+        for(int i = 0; i < s.length(); i++){
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i + 1);
+            int len = max(len1, len2);
+            if(len > end - start){
+                start = i - (len - 1) / 2;
+                end = i + len / 2;
+            }
+        }
+        return s.substr(start,end - start + 1);
+    }
+};
+
+//Manacher
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        string sNew = "$#";
+    for (auto iter = s.cbegin(); iter != s.cend(); iter++)
+    {
+        sNew += *iter;
+        sNew += "#";
+    }
+
+    int iNewSize = sNew.size();
+    int iMaxSubStringLength = -1;    // 最长回文子串的长度
+    int iMaxSubStringPos = -1; // 最长回文子串中心点的位置
+    vector<int> p(iNewSize, 0);
+    int id = 0;
+    int mx = 0;
+
+    for (int i = 1; i < iNewSize; i++)
+    {
+        if (i < mx)
+        {
+            p[i] = min(p[2 * id - i], mx - i);
+        }
+        else
+        {
+            p[i] = 1;
+        }
+
+        while (sNew[i - p[i]] == sNew[i + p[i]])  // 最左边sNew[0]='$',最右边sNew[sNew.size()] = '\0'，无需判断边界
+        {
+            p[i]++;
+        }
+
+        if (mx < i + p[i])  //我们每走一步i，都要和mx比较，我们希望mx尽可能的远，这样才能更有机会执行if (i < mx)这句代码，从而提高效率  
+        {
+            id = i;
+            mx = i + p[i];
+        }
+        if (p[i] - 1 > iMaxSubStringLength)
+        {
+            iMaxSubStringLength = p[i] - 1;
+            iMaxSubStringPos = i;
+        }
+    }
+
+    auto iStart = s.cbegin() + (iMaxSubStringPos - iMaxSubStringLength - 1) / 2; // 将最长回文子串起始位置转换回原串
+    return string(iStart, iStart + iMaxSubStringLength);
+    }
+};
