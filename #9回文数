@@ -16,3 +16,16 @@
 输出: false
 解释: 从右向左读, 为 01 。因此它不是一个回文数。
 ***/
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if(x < 0 || (x % 10 == 0 && x != 0))
+            return false;
+        int reversedNumber = 0;
+        while(x > reversedNumber){
+            reversedNumber = reversedNumber * 10 + x % 10;
+            x = x / 10;
+        }
+        return x == reversedNumber || x == reversedNumber / 10;
+    }
+};
