@@ -11,31 +11,7 @@
   [-1, -1, 2]
 ]
 ***/
-public: vector<vector<int>> threeSum(vector<int>& nums) {
-  vector<vector<int>> res; 
-  sort(nums.begin(), nums.end()); 
-  if (nums.empty() || nums.back() < 0 || nums.front() > 0) 
-    return {}; 
-  for (int k = 0; k < nums.size()-2; ++k) { 
-    if (nums[k] > 0) break; 
-    if (k > 0 && nums[k] == nums[k - 1]) continue; 
-    int target = 0 - nums[k]; 
-    int i = k + 1, j = nums.size() - 1; 
-    while (i < j) { 
-      if (nums[i] + nums[j] == target) { 
-        res.push_back({nums[k], nums[i], nums[j]}); 
-        while (i < j && nums[i] == nums[i + 1]) ++i; 
-        while (i < j && nums[j] == nums[j - 1]) --j; 
-        ++i; 
-        --j; 
-      }else if (nums[i] + nums[j] < target) 
-        ++i; 
-      else 
-        --j; 
-    } 
- } 
- return res; 
-}
+
 //
 class Solution {
 public:
@@ -66,6 +42,30 @@ public:
         }
         set<vector<int>> st(res.begin(),res.end());
         res.assign(st.begin(),st.end());
+        return res;
+    }
+};
+//
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        set<vector<int>> S;
+        for(int i = 0; i < nums.size(); ++i){
+            vector<int> tmp;
+            int l = 0, r = nums.size() - 1;
+            while(l < r){
+                if(l == i) {break;}
+                if(r == i) {break;}
+                if(nums[l] + nums[r] + nums[i] == 0){
+                    vector<int> tmp = {nums[l],nums[i],nums[r]};
+                    S.insert(tmp); ++l; --r;
+                }else if(nums[l] + nums[r] + nums[i] < 0){
+                    ++l;
+                }else --r;
+            }
+        }
+        vector<vector<int>> res(S.begin(), S.end());
         return res;
     }
 };
